@@ -14,11 +14,11 @@ class Contact extends REST_Controller
   {
      $this->load->model('Contact_m');
      $Data;
-     if(isset($this->post('name'))){
+     if($this->post('name')!=null){
      	$Data['name']=$this->post('name');
-     } if(isset($this->post('email'))){
+     } if($this->post('email')!=null){
      	$Data['email']=$this->post('email');
-     } if(isset($this->post('phone'))){
+     } if($this->post('phone')!=null){
      	$Data['phone']=$this->post('phone');
      }
       				date_default_timezone_set("America/Chicago");
@@ -32,11 +32,11 @@ class Contact extends REST_Controller
   {
      $this->load->model('Contact_m');
      $Data;
-     if(isset($this->put('name'))){
+     if($this->put('name')!=null){
      	$Data['name']=$this->put('name');
-     } if(isset($this->post('email'))){
+     } if($this->post('email')!=null){
      	$Data['email']=$this->put('email');
-     } if(isset($this->post('phone'))){
+     } if($this->post('phone')!=null){
      	$Data['phone']=$this->put('phone');
      }
       				
