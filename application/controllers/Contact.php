@@ -4,7 +4,7 @@ use Restserver\Libraries\REST_Controller;
 
 class Contact extends REST_Controller
 {
-  parent::__construct();        
+  parent::__construct(){       
           $this->load->model('Contact_m');
      $this->load->model('Phone_m');
      $this->load->model('Email_m');
