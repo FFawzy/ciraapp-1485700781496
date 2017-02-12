@@ -49,7 +49,11 @@ class Email_m extends CI_Model{
    
 
     function save($User_arr) {
-        
+         date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $User_arr['date_created'] = $strdate;
         return $this -> db -> insert('email', $User_arr);
 
     }
@@ -72,5 +76,25 @@ class Email_m extends CI_Model{
         $this -> db -> where($arr) -> delete('email');
     }
     
+    function getEmailsByID($contact_id)
+    {
+        $query = "SELECT * FROM email WHERE contact_id =" . addslashes($contact_id);
+        $result = $this->db->query($query);
+        return $result->result();
+    }
+    
+    function getEmailByEmail($email)
+    {
+        $query = "SELECT * FROM email WHERE email ='" . addslashes($email) . "'";
+        $result = $this->db->query($query);
+        return $result->result();
+    }
+
+    function addNewEmail($id, $email)
+    {
+        $query = "INSERT INTO email (contact_id, email) VALUES (". $id .", '" . $email . "');";
+        $result = $this->db->query($query);
+        return $result->result();
+    }
   
 }

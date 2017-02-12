@@ -49,7 +49,11 @@ class Phone_m extends CI_Model{
    
 
     function save($User_arr) {
-        
+         date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $User_arr['date_created'] = $strdate;
         return $this -> db -> insert('phone', $User_arr);
 
     }
@@ -72,5 +76,24 @@ class Phone_m extends CI_Model{
         $this -> db -> where($arr) -> delete('phone');
     }
     
-  
+    function getPhonesByID($contact_id)
+    {
+        $query = "SELECT * FROM phone WHERE contact_id =" . addslashes($contact_id);
+        $result = $this->db->query($query);
+        return $result->result();
+    }
+
+    function getPhoneByNumber($phone)
+    {
+        $query = "SELECT * FROM phone WHERE phone ='" . addslashes($phone) . "'";
+        $result = $this->db->query($query);
+        return $result->result();
+    }
+
+    function addNewPhone($id, $phone)
+    {
+        $query = "INSERT INTO phone (contact_id, phone) VALUES (". $id .", '" . $phone . "');";
+        $result = $this->db->query($query);
+        return $result->result();
+    }
 }
