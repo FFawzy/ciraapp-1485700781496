@@ -20,29 +20,27 @@ class SaveContact extends REST_Controller
     $main_phone = $this->post('main_phone');
     $phones = $this->post('phones');
     $emails = $this->post('emails');
-    $id=0;
-
+    $id = 0;
     if(isset($phones) && sizeof($phones) > 0) {
       foreach ($phones as $phone) {
         $old_phone = $this->Phone_m->getPhoneByNumber($phone);
         if(isset($old_phone)) {
-          $id = $old_phone[0]->id;
+          $id = $old_phone->id;
           break;
         }
       }
     }
-    if($id==0 && isset($emails) && sizeof($emails)>0) {
+    if($id == 0 && isset($emails) && sizeof($emails)) {
       foreach ($emails as $email) {
         $old_email = $this->Email_m->getEmailByEmail($email);
         if(isset($old_email)) {
-          $id = $old_email[0]->id;
+          $id = $old_email->id;
           break;
         }
       }  
     }
-    if($id==0) {
+    if($id == 0) {
       //add new contact
-
       $this->addNewContact($name, $main_email, $main_phone, $phones, $emails);
     }
     else {
@@ -52,36 +50,45 @@ class SaveContact extends REST_Controller
     // $this->response($phonesArray, 200);
   }
 
-  public function addNewContact($name, $main_email, $main_phone, $phones, $emails)
+  private function addNewContact($name, $main_email, $main_phone, $phones, $emails)
   {
-    // if(!$main_phone && $phones && sizeof($phones) > 0) {
+    if(!isset($main_phone) && $phones && sizeof($phones) > 0) {
+      $main_phone = $phones[0];
+    }
 
-    //   $main_phone = $phones[0];
-    // }
-
-    // if(!$main_email && $emails && sizeof($emails) > 0) {
-    //   $main_email = $emails[0];
-    // }
+    if(!isset($main_email) && $emails && sizeof($emails) > 0) {
+      $main_email = $emails[0];
+    }
 
     $id = $this->Contact_m->addNewContact($name, $main_email, $main_phone);
-    // if($phones && sizeof($phones) > 0) {
-    //   foreach ($phones as $phone) {
-    //     $Data;
-    //     $Data['contact_id'] = $id;
-    //     $Data['phone']= $phone;
-    //     $this->Phone_m->save($Data);
-    //   }
-    // }
+    if($phones && sizeof($phones) > 0) {
+      foreach ($phones as $phone) {
+        $Data;
+        $Data['contact_id'] = $id;
+        $Data['phone']= $phone;
+         date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $Data['date_created'] = $strdate;
+        $this->Phone_m->save($Data);
+      }
+    }
 
-    // if($emails && sizeof($emails) > 0) {
-    //   foreach ($emails as $email) {
-    //     $Data;
-    //     $Data['contact_id'] = $id;
-    //     $Data['email']= $email;
-    //     $this->Email_m->save($Data);
-    //   }
-    // }
-    $this->response($id, 200);
+    if($emails && sizeof($emails) > 0) {
+      foreach ($emails as $email) {
+        $Data2;
+        $Data2['contact_id'] = $id;
+        $Data2['email']= $email;
+        date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $Data2['date_created'] = $strdate;
+        $this->Email_m->save($Data2);
+      }
+    }
+    $this->response('Contact Saved', 200);
   }
 
   private function updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails)
@@ -90,10 +97,7 @@ class SaveContact extends REST_Controller
     if($phones && sizeof($phones) > 0) {
       foreach ($phones as $phone) {
         if(!$this->Phone_m->getPhoneByNumber($phone)) {
-          $Data;
-        $Data['contact_id'] = $id;
-        $Data['phone']= $phone;
-        $this->Phone_m->save($Data);
+          $this->Phone_m->addNewPhone($id, $phone);
         }
       }
     }
@@ -101,10 +105,7 @@ class SaveContact extends REST_Controller
     if($emails && sizeof($emails) > 0) {
       foreach ($emails as $email) {
         if(!$this->Email_m->getEmailByEmail($email)) {
-          $Data;
-        $Data['contact_id'] = $id;
-        $Data['email']= $email;
-        $this->Email_m->save($Data);
+          $this->email_m->addNewEmail($id, $email);
         }
       }
     }

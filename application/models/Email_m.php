@@ -49,11 +49,7 @@ class Email_m extends CI_Model{
    
 
     function save($User_arr) {
-         date_default_timezone_set("America/Chicago");
-                    $tempdate = getdate();
-                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
-                   
-        $User_arr['date_created'] = $strdate;
+        
         return $this -> db -> insert('email', $User_arr);
 
     }
