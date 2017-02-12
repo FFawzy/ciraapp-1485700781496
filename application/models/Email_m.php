@@ -49,7 +49,7 @@ class Email_m extends CI_Model{
    
 
     function save($User_arr) {
-        
+         
         return $this -> db -> insert('email', $User_arr);
 
     }

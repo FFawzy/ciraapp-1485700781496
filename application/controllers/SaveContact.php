@@ -25,7 +25,7 @@ class SaveContact extends REST_Controller
       foreach ($phones as $phone) {
         $old_phone = $this->Phone_m->getPhoneByNumber($phone);
         if(isset($old_phone)) {
-          $id = $old_phone->id;
+          $id = $old_phone[0]->id;
           break;
         }
       }
@@ -34,7 +34,7 @@ class SaveContact extends REST_Controller
       foreach ($emails as $email) {
         $old_email = $this->Email_m->getEmailByEmail($email);
         if(isset($old_email)) {
-          $id = $old_email->id;
+          $id = $old_email[0]->id;
           break;
         }
       }  
