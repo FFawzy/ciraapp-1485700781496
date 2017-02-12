@@ -54,35 +54,34 @@ class SaveContact extends REST_Controller
 
   public function addNewContact($name, $main_email, $main_phone, $phones, $emails)
   {
-    $this->response($phones, 200);
-    if(!$main_phone && $phones && sizeof($phones) > 0) {
+    // if(!$main_phone && $phones && sizeof($phones) > 0) {
 
-      $main_phone = $phones[0];
-    }
+    //   $main_phone = $phones[0];
+    // }
 
-    if(!$main_email && $emails && sizeof($emails) > 0) {
-      $main_email = $emails[0];
-    }
+    // if(!$main_email && $emails && sizeof($emails) > 0) {
+    //   $main_email = $emails[0];
+    // }
 
     $id = $this->Contact_m->addNewContact($name, $main_email, $main_phone);
-    if($phones && sizeof($phones) > 0) {
-      foreach ($phones as $phone) {
-        $Data;
-        $Data['contact_id'] = $id;
-        $Data['phone']= $phone;
-        $this->Phone_m->save($Data);
-      }
-    }
+    // if($phones && sizeof($phones) > 0) {
+    //   foreach ($phones as $phone) {
+    //     $Data;
+    //     $Data['contact_id'] = $id;
+    //     $Data['phone']= $phone;
+    //     $this->Phone_m->save($Data);
+    //   }
+    // }
 
-    if($emails && sizeof($emails) > 0) {
-      foreach ($emails as $email) {
-        $Data;
-        $Data['contact_id'] = $id;
-        $Data['email']= $email;
-        $this->Email_m->save($Data);
-      }
-    }
-    $this->response('Contact Saved', 200);
+    // if($emails && sizeof($emails) > 0) {
+    //   foreach ($emails as $email) {
+    //     $Data;
+    //     $Data['contact_id'] = $id;
+    //     $Data['email']= $email;
+    //     $this->Email_m->save($Data);
+    //   }
+    // }
+    $this->response($id, 200);
   }
 
   private function updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails)
