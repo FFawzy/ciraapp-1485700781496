@@ -44,9 +44,12 @@ class SaveContact extends REST_Controller
       //update old contact
       //$this->updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails);
       //$data = array('id'=>$id,'name'=>$name,'main_email'=$main_email,'main_phone'=>$main_phone,'phones'=>$phones,'emails'=>$emails);
-      $this->response('mark as suggested', 200);
+      $this->response('suggest', 200);
     }
-    // $this->response($phonesArray, 200);
+    else {
+     $this->response('ignore', 200);
+    }
+    
   }
   public function index_put()
   {
