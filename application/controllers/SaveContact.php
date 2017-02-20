@@ -39,13 +39,47 @@ class SaveContact extends REST_Controller
         }
       }  
     }
-    if($id == 0) {
-      //add new contact
-      $this->addNewContact($name, $main_email, $main_phone, $phones, $emails);
+    
+    if($id!=0){
+      //update old contact
+      //$this->updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails);
+      //$data = array('id'=>$id,'name'=>$name,'main_email'=$main_email,'main_phone'=>$main_phone,'phones'=>$phones,'emails'=>$emails);
+      $this->response('mark as suggested', 200);
     }
-    else {
+    // $this->response($phonesArray, 200);
+  }
+  public function index_put()
+  {
+    $name = $this->put('name');
+    $main_email = $this->put('main_email');
+    $main_phone = $this->put('main_phone');
+    $phones = $this->put('phones');
+    $emails = $this->put('emails');
+    $id = 0;
+    if(isset($phones) && sizeof($phones) > 0) {
+      foreach ($phones as $phone) {
+        $old_phone = $this->Phone_m->getPhoneByNumber($phone);
+        if(isset($old_phone)) {
+          $id = $old_phone[0]->id;
+          break;
+        }
+      }
+    }
+    if($id == 0 && isset($emails) && sizeof($emails)) {
+      foreach ($emails as $email) {
+        $old_email = $this->Email_m->getEmailByEmail($email);
+        if(isset($old_email)) {
+          $id = $old_email[0]->id;
+          break;
+        }
+      }  
+    }
+    
+    if($id!=0){
       //update old contact
       $this->updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails);
+      //$data = array('id'=>$id,'name'=>$name,'main_email'=$main_email,'main_phone'=>$main_phone,'phones'=>$phones,'emails'=>$emails);
+      $this->response('updated', 200);
     }
     // $this->response($phonesArray, 200);
   }
