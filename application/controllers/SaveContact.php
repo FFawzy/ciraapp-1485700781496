@@ -82,7 +82,9 @@ class SaveContact extends REST_Controller
       //update old contact
       $this->updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails);
       //$data = array('id'=>$id,'name'=>$name,'main_email'=$main_email,'main_phone'=>$main_phone,'phones'=>$phones,'emails'=>$emails);
-      $this->response('updated', 200);
+     
+    }else{
+      $this->response('error', 404);
     }
     // $this->response($phonesArray, 200);
   }
@@ -134,7 +136,15 @@ class SaveContact extends REST_Controller
     if($phones && sizeof($phones) > 0) {
       foreach ($phones as $phone) {
         if(!$this->Phone_m->getPhoneByNumber($phone)) {
-          $this->Phone_m->addNewPhone($id, $phone);
+          $Data;
+        $Data['contact_id'] = $id;
+        $Data['phone']= $phone;
+         date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $Data['date_created'] = $strdate;
+        $this->Phone_m->save($Data);
         }
       }
     }
@@ -142,7 +152,15 @@ class SaveContact extends REST_Controller
     if($emails && sizeof($emails) > 0) {
       foreach ($emails as $email) {
         if(!$this->Email_m->getEmailByEmail($email)) {
-          $this->email_m->addNewEmail($id, $email);
+         $Data2;
+        $Data2['contact_id'] = $id;
+        $Data2['email']= $email;
+        date_default_timezone_set("America/Chicago");
+                    $tempdate = getdate();
+                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                   
+        $Data2['date_created'] = $strdate;
+        $this->Email_m->save($Data2);
         }
       }
     }
