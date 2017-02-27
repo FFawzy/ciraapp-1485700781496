@@ -58,25 +58,8 @@ class SaveContact extends REST_Controller
     $main_phone = $this->put('main_phone');
     $phones = $this->put('phones');
     $emails = $this->put('emails');
-    $id = 0;
-    if(isset($phones) && sizeof($phones) > 0) {
-      foreach ($phones as $phone) {
-        $old_phone = $this->Phone_m->getPhoneByNumber($phone);
-        if(isset($old_phone)) {
-          $id = $old_phone[0]->id;
-          break;
-        }
-      }
-    }
-    if($id == 0 && isset($emails) && sizeof($emails)) {
-      foreach ($emails as $email) {
-        $old_email = $this->Email_m->getEmailByEmail($email);
-        if(isset($old_email)) {
-          $id = $old_email[0]->id;
-          break;
-        }
-      }  
-    }
+    $id = $this->put('id');
+   
     
     if($id!=0){
       //update old contact
@@ -133,9 +116,13 @@ class SaveContact extends REST_Controller
   private function updateOldContact($id, $name, $main_email, $main_phone, $phones, $emails)
   {
     
-    if($phones && sizeof($phones) > 0) {
+
+
+   $phon=0;
       foreach ($phones as $phone) {
-        if(!$this->Phone_m->getPhoneByNumber($phone)) {
+        $check=$this->Phone_m->get(null,array('phone'=>$phone,'contact_id'=>$id));
+
+        if($check[0]->phone!=$phone){
           $Data;
         $Data['contact_id'] = $id;
         $Data['phone']= $phone;
@@ -145,26 +132,31 @@ class SaveContact extends REST_Controller
                    
         $Data['date_created'] = $strdate;
         $this->Phone_m->save($Data);
+        $phon++;
         }
       }
-    }
+    
 
-    if($emails && sizeof($emails) > 0) {
+    $mails=0;
       foreach ($emails as $email) {
-        if(!$this->Email_m->getEmailByEmail($email)) {
-         $Data2;
-        $Data2['contact_id'] = $id;
-        $Data2['email']= $email;
-        date_default_timezone_set("America/Chicago");
-                    $tempdate = getdate();
-                    $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
-                   
-        $Data2['date_created'] = $strdate;
-        $this->Email_m->save($Data2);
-        }
+          $check2=$this->Email_m->get(null,array('email'=>$email,'contact_id'=>$id));
+          if($check2[0]->email!=$email){
+           $Data2;
+          $Data2['contact_id'] = $id;
+          $Data2['email']= $email;
+          date_default_timezone_set("America/Chicago");
+                      $tempdate = getdate();
+                      $strdate = $tempdate['year']."-".$tempdate['mon']."-".$tempdate['mday']." ".$tempdate['hours'].":".$tempdate['minutes'].":".$tempdate['seconds'];
+                     
+          $Data2['date_created'] = $strdate;
+          $this->Email_m->save($Data2);
+          $mails++;
+          }
+
       }
-    }
-    $this->response('Contact updated', 200);
+
+    
+    $this->response('Contact updated with '.$mails.' mails and '.$phon.' phones', 200);
   }
 
 }
